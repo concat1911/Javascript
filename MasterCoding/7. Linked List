@@ -1,0 +1,143 @@
+Linked List
+    - prepend O(1)
+    - append  O(1)
+    - lookup  O(n)
+    - insert  O(n)
+    - delete  O(n)
+
+Implementing Single Linked List
+
+    class Node {
+        constructor(value){
+            this.value = value;
+            this.next = null;
+        }
+    }
+
+    class LinkedList {
+        constructor(value){
+            this.head = {
+                value: value,
+                next: null
+            }
+            this.tail = this.head;
+            this.length = 1;
+        }
+
+        append (value) {
+            const newNode = {
+                value: value,
+                next: null
+            };
+
+            this.tail.next = newNode;
+            this.tail = newNode;
+            this.length++;
+            return this;
+        }
+
+        prepend(value){
+            const newNode = {
+                value: value,
+                next: null
+            };
+
+            newNode.next = this.head;
+            this.head = newNode;
+            this.length++;
+            return this;
+        }
+
+        insert(index, value) {
+            //Check index parameter
+            if(index < 0 || index > this.length){
+                console.log("Invalid index");
+                return null;
+            }
+
+            //When insert at the first => prepend
+            if(index === 0){
+                return this.prepend(value);
+            }
+            //When insert at last => append
+            if(index === this.length){
+                return this.append(value);
+            }
+
+            //Node to insert
+            const newNode = {
+                value: value,
+                next: null
+            }
+            
+            let curNode = this._TraverseToIndex(index - 1);
+
+            const nodeAfterInsert = curNode.next;
+            newNode.next = nodeAfterInsert;
+            curNode.next = newNode;
+            this.length++;
+
+            return this;
+        }
+
+        remove(index){
+            //check index parameter
+            if(index < 0 || index > this.length){
+                console.log("Invalid index");
+                return null;
+            }
+
+            //case remove the first node
+            if(index === 0){
+                this.head = this.head.next;
+            }
+
+            let curNode = this._TraverseToIndex(index - 1);
+            const removeNode = curNode.next;
+            curNode.next = removeNode.next;
+            this.length--;
+            return this.printList();
+        }
+
+        printList(){
+            const array = [];
+
+            let curNode =  this.head;
+
+            while(curNode !== null){
+                array.push(curNode.value);
+                curNode = curNode.next;
+            }
+            return array;
+        }
+
+        _TraverseToIndex (index) {
+            let headClone = this.head;
+
+            let counter = 0;
+
+            while(counter != index){
+                headClone = headClone.next;
+                counter++;
+            }
+
+            return headClone;
+        }
+    }
+
+    const myLinkedList = new LinkedList(10);
+    myLinkedList.append(5);
+    myLinkedList.append(6);
+    myLinkedList.printList();
+    myLinkedList.prepend(2);
+    myLinkedList.printList();
+    myLinkedList.insert(3, 8);
+    myLinkedList.insert(3, 9);
+    myLinkedList.printList();
+    myLinkedList.remove(4);
+    myLinkedList.remove(1);
+    myLinkedList.printList();
+
+Implementing Double Linked List
+
+Single Linked List vs Double Linked List

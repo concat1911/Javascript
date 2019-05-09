@@ -1,0 +1,120 @@
+HASH TABLES
+    (Built-in:
+        Python: Dictionaries
+        Javascript: Object
+        Ruby: Hashes
+    )
+
+    Hash tables: key (index, where it store) 
+        key => Hashfuntion => index
+        - insert: O(1)
+        - lookup: O(1)
+        - delete: O(1)
+        - search: O(1)
+            
+        let user= {
+            age: 54,
+            name: "Kyle",
+            magic: true,
+            scream: function(){
+                console.log("Aaa, I am a magic person!. I'm so evil");
+            }
+        }
+
+        user.age                        //O(1)
+        user.spell = 'I kill you!';     //O(1)
+        user.scream();                  //O(1)
+
+    Idempotent
+    Hash Collisions: Values have the same key
+
+    Implement
+        class HashTables(){
+            constructor(size){
+                this.data = new Array(size);
+            }
+
+            _hash(key){
+                let hash = 0;
+
+                for (let i = 0; i < key.length; i++){
+                    hash = (hash + key.charCodeAt(i) * i) % this.data.length
+                }
+                return hash;
+            }
+
+            set(key, value){
+                let address = this._hash(key);
+                if(!this.data[address]){
+                    this.data[address] = [];
+                }
+                this.data[address] = push([key, value]);
+            }
+
+            get(key){
+                let address =  this._hash(key);
+                const currentBucket = this.data[address];
+                if(currentBucket){
+                    for(let i = 0; i < currentBucket.length; i++){
+                        if(currentBucket[i][0] === key)
+                        {
+                            return currentBucket[i][1];
+                        }
+                    }
+                }   
+                return undefined;
+            }
+
+            keys(){
+                const keysArray = [];
+                for(let i = 0; i < this.data.length; i++){
+                    if(this.datap[i]){
+                        keys.Array.push(this.data[i][0][0]);
+                    }
+                }
+                return keysArray;
+            }
+        }
+
+        const myHashTable = new HashTables(50);
+        myHashTable.set('grapes', 10000);
+        myHashTable.set('key', 10000);
+        myHashTable.get('grapes');
+        myHashTable.keys();
+
+    Why using:
+        + really fast data access
+        + fast lookup
+        + fast insert
+        + flexible keys
+
+        - unordered
+        - slow key iteration
+
+    Google Interview Question
+        Find the first repeat elements in array
+
+        function firstRecurringCharacter(input){
+            for(let i = 0; i < input.length; i++){
+                for(let j = i + 1; j < input.length; j++){
+                    if(input[i] ===  input[j]) {
+                        return input[i];
+                    }
+                }
+            }
+            return undefined;
+        } //O(n^2)
+
+        function firstRecurringCharacter(input){
+            let map = {};
+            for (let i = 0; i < input.length; i++){
+                if(map[input[i]] !== undefined){
+                    return input[i];
+                }else{
+                    map[input[i]] = i;
+                }
+            }
+        } //O(n)
+    
+Link Keyword:
+    MD5 Hash Generator
