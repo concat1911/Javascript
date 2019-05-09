@@ -1,0 +1,120 @@
+1. OOP Procedural
+    Factory Function
+    
+        function createElf(name, weapon){
+            return {
+                name,
+                weapon,
+                attack(){
+                    return  'attack with ' + weapon;
+                }
+            }
+        }
+
+        const peter =  createElf('Peter', 'stones');
+        peter.attack();
+        const sam = createElf('Sam', 'fire');
+        sam.attack();
+    
+    Constructor Functions
+        allow us to use new Keyword
+
+        function elf(name, weapon){
+            this.name = name;
+            this.weapon = weapon;
+        }
+
+        const peter = new elf('Peter', 'stones');
+    
+    Classes
+        under the hood, classes are stil objects
+        Example:
+            class Elf {
+                constructor (name, weapon){
+                    this.name   = name;
+                    this.weapon = weapon;
+                }
+
+                attack(){
+                    return 'attack with ' + this.weapon;
+                }
+            }
+    
+    "this" in 4 ways
+        - new binding this
+
+            function Person(name, age){
+                this.name = name;
+                this.age  = age;
+            }
+
+            const person1 = new Person('Xavier', 55);
+
+        - implicit binding
+
+            const person = {
+                name: 'Karen',
+                age: 40,
+                
+                hi(){
+                    console.log('hi ' + this.name);
+                }
+            }
+        
+        - explixit binding
+            const person = {
+                name: 'Karen',
+                age: 40,
+                hi: function() {
+                    console.log('hi' + this.setTimeout)
+                }.bind(window);
+            }
+
+            person3.hi();
+        
+        - arrow function
+    
+    Inheritance
+        class Character {
+            constructor (name, weapon){
+                this.name = name;
+                this.weapon = weapon;
+            }
+
+            attack(){
+                return this.name + ' attack with ' + this weapon;
+            }
+        }
+
+        class Elf extends Character{
+            constructor (name, weapon, type) {
+                super(name, weapon); // call constructor from parent class (superclass)
+                this.type = type;
+            }
+        }
+
+        class Orge extends Character{
+            constructor (name, weapon, type) {
+                super(name, weapon); // call constructor from parent class (superclass)
+                this.color = color;
+            } 
+            makeFort(){
+                return 'strongest fort in the world';
+            }
+        }
+
+        const fiona = new Elf('Fiona', 'knife', 'normal');
+        const shrek = new Orge('Shrek', 'club', 'green');
+    
+    Public & Private
+        Still in the work
+    
+    4 Pillars of OOP
+        - Encapsulation
+            we wrap code into boxes that are related to one another so that these boxes can just interact with each other
+            using the methods and properties that we make availble.
+                => easy to maintain and reuseable
+        
+        - Abstraction
+        - Inheritance
+        - Polymorphism (same function but return different things)

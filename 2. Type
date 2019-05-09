@@ -1,0 +1,91 @@
+JAVASCRIPT TYPES
+
+    PRIMITIVE: data only presents single value
+        typeof 5                    => number
+        typeof 'to be or not to be' => string
+        typeof true                 => boolean
+        typeof undefined            => undefined
+        typeof null                 => object ??!!
+        typeof Symbol("just me")    => symbol
+
+    NON-PRIMITIVE: doesn't contain the actual value directly (pointer similar)
+        typeof {}                   => object
+        typeof []                   => object
+        typeof function(){}         => function
+    
+    ARRAY
+        is an object
+        check array: Array.isArray()
+    
+    PASS BY VALUE vs PASS BY REFERENCE
+        Example:
+            var a = 5;
+            var b = a;
+            b++;
+
+        => pass by value: copy the value and create that value somewhere else in memory
+
+        Example:
+            let obj1 = {name:'admin', password: 'superUser'};
+            let obj2 = obj1;
+
+            obj2.password = 'hacked';
+
+            console.log(obj1);
+            console.log(obj2);
+
+            Output: 
+                Object { name: "admin", password: "hacked" }
+                Object { name: "admin", password: "hacked" }
+        
+        => pass by reference
+
+        Solution: shallow clone
+                => using Object.assign()
+                   using {...}
+            let clone  = Object.assign({}, obj);
+            let clone2 = {...obj}
+
+        *: this method only clone first level
+
+        Solution2: deep clone (performen!)
+            let superClone = JSON.parse(JSON.stringify(obj));
+
+        Example:
+            var c = [1,2,3,4,5];
+            var d = c;
+            d.push(6);
+            console.log(c);
+            console.log(d);
+
+            Output:
+                Array(6) [ 1, 2, 3, 4, 5, 6 ]
+                Array(6) [ 1, 2, 3, 4, 5, 6 ]
+        
+        => pass by reference
+
+        Solution: => using concat
+                var d = [].concat(c);
+    
+    TYPE COERCION
+        when the appeareance that is the things to the left and to the right of the operator are different TYPES
+        one of them will be converted in to an equivalent value by JS engine
+
+        Do all languages have type coercion? => yes
+
+        ==  means compare the two values and if they have different types => convert into the same type
+        === compare 2 values but not convert them
+
+        Example:
+            1 == 1   => true
+            1 == '1' => true ???!!
+
+        Link:
+            https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness
+    
+    JTS Dynamic vs Static Typing
+        Dynamic:   var a = 100;
+        Static:     int a = 100; //must be defined
+
+        Pros and Cons: googling
+            

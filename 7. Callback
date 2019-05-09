@@ -1,0 +1,214 @@
+Callback function
+    Many actions in Javascript is asynchronous
+
+    Example:
+        function loadScript(src, callback){
+            let script = document.createElement('script');
+            script.src = src;
+
+            script.onload = () => callback(script);
+
+            document.head.append(script);
+        }
+
+        // The function is called “asynchronously,” because the action (script loading) finishes not now, but later.
+        // If we want to call new functions from the script, we should write that in the callback
+
+        // loads and executes the script
+        loadScript('/my/script.js', function(){
+            //the callback run after the script is loaded
+            newFunction(); //so now it work
+            ...
+        });
+
+        // the code below loadScript doesn't wait for the script loading to finish
+        // ...
+
+Callback in callback
+    How can we load two scripts sequentially: the first one, and then the second one after it?
+
+        loadScript('/my/script.js', function(script) {
+
+            alert(`Cool, the ${script.src} is loaded, let's load one more`);
+
+            loadScript('/my/script2.js', function(script) {
+                alert(`Cool, the second script is loaded`);
+            });
+        });
+    
+    One more script ?
+        loadScript('/my/script.js', function(script) {
+
+            alert(`Cool, the ${script.src} is loaded, let's load one more`);
+
+            loadScript('/my/script2.js', function(script) {
+                alert(`Cool, the second script is loaded`);
+
+                loadScript('/my/script3.js', function(script) {
+                    alert(`Cool, the third script is loaded`);
+                });
+            });
+        });
+
+Handling errors
+    In the above examples we didn’t consider errors. What if the script loading fails? Our callback should be able to react on that.
+
+        function loadScript(src, callback) {
+            let script = document.createElement('script');
+            script.src = src;
+
+            script.onload = () => callback(null, script);
+            script.onerror = () => callback(new Error(`Script load error for ${src}`));
+
+            document.head.append(script);
+        }
+
+        //usage
+        loadScript('/my/script.js', function(error, script) {
+            if (error) {
+                // handle error
+            } else {
+                // script loaded successfully
+            }
+        });
+
+Pyramid of Doom
+    - Multiple asynchronous actions that follow one after another we’ll have code like this:
+
+        loadScript('1.js', function(error, script) {
+
+            if (error) {
+                handleError(error);
+            } else {
+                // ...
+                loadScript('2.js', function(error, script) {
+                if (error) {
+                    handleError(error);
+                } else {
+                    // ...
+                    loadScript('3.js', function(error, script) {
+                    if (error) {
+                        handleError(error);
+                    } else {
+                        // ...continue after all scripts are loaded (*)
+                    }
+                    });
+
+                }
+                })
+            }
+        });
+
+    - As calls become more nested, the code becomes deeper and increasingly more difficult to manage, especially if we have a real code instead of ..., that may include more loops, conditional statements and so on.
+        That’s sometimes called “callback hell” or “pyramid of doom.”
+
+Promise
+    - The constructor syntax for a promise object is:
+        let promise = new Promise(function(resolve, reject) {
+            // executor (the producing code, "singer")
+        });
+    
+    - The function passed to new Promise is called the executor. When the promise is created, this executor function runs automatically. 
+    - It contains the producing code, that should eventually produce a result. 
+    - In terms of the analogy above: the executor is the “singer”.
+    - The resulting promise object has internal properties:
+        state: initially “pending”, then changes to either “fulfilled” or “rejected”,
+        result: an arbitrary value of your choosing, initially undefined.
+
+    - Example of a successful job completion, a “fulfilled promise”.
+
+        let promise = new Promise(function(resolve, reject) {
+            // the function is executed automatically when the promise is constructed
+
+            // after 1 second signal that the job is done with the result "done"
+            setTimeout(() => resolve("done"), 1000);
+        });
+    
+    - Example of the executor rejecting the promise with an error:
+        let promise = new Promise(function(resolve, reject) {
+            // after 1 second signal that the job is finished with an error
+            setTimeout(() => reject(new Error("Whoops!")), 1000);
+        });
+    
+    - The state and result are internal
+
+    - The properties state and result of the Promise object are internal. 
+        We can’t directly access them from our “consuming code”. 
+        We can use the methods .then/.catch/.finally for that.
+
+    - Consumers: then, catch, finally
+
+        function loadScript(src) {
+            return new Promise(function(resolve, reject) {
+                let script = document.createElement('script');
+                script.src = src;
+
+                script.onload = () => resolve(script);
+                script.onerror = () => reject(new Error("Script load error: " + src));
+
+                document.head.append(script);
+            });
+        }
+
+        //usage
+        let promise = loadScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.js");
+
+        promise.then(
+            script => alert(`${script.src} is loaded!`),
+            error => alert(`Error: ${error.message}`)
+        );
+
+        promise.then(script => alert('One more handler to do something else!'));
+
+Promises chaining:
+
+    loadScript("/article/promise-chaining/one.js")
+        .then(function(script) {
+            return loadScript("/article/promise-chaining/two.js");
+        })
+        .then(function(script) {
+            return loadScript("/article/promise-chaining/three.js");
+        })
+        .then(function(script) {
+            // use functions declared in scripts
+            // to show that they indeed loaded
+            one();
+            two();
+            three();
+        });
+    
+    - This code can be made bit shorter with arrow functions:
+
+    loadScript("/article/promise-chaining/one.js")
+        .then(script => loadScript("/article/promise-chaining/two.js"))
+        .then(script => loadScript("/article/promise-chaining/three.js"))
+        .then(script => {
+            // scripts are loaded, we can use functions declared there
+            one();
+            two();
+            three();
+        });
+
+Async Await
+    async function fetchUsers(){
+        const res = await fetch('https://jsonplaceholder.typicode.com/users');
+        const data = await res.json();
+        console.log(data);
+    }
+
+    fetchUsers();
+
+Object spread operator
+    const animals = {
+        tiger: 23,
+        monkey: 2,
+        lion: 5
+    }
+    const array = [1,2,3,4,5];
+
+    function sum (a,b,c,d,e){
+        return a + b + c + d + e;
+    }
+    sum(...array);
+    
+    const {tiger, ...rest} = animals;

@@ -1,0 +1,407 @@
+ SECTION 1:
+
+    Javascript Engine
+
+    - List of ECMAScript engines:
+        https://en.wikipedia.org/wiki/List_of_ECMAScript_engines
+
+    - Javascript was created by Brendon Eich
+
+    - Inside Engine:
+        .js File 
+            => Parser 
+                => AST ( Abstract Syntax Tree )
+                    => Interpreter 
+                        => Profiler 
+                            => Compiler 
+                                => Optimized code
+                                    => Maschine Code
+    
+    - Example of Abstract Syntax Tree (AST):
+
+        function jsengine(code){
+            return code.split(/\s+/);
+        }
+
+        jsengine('var a = 5 ');
+
+        Output: [ 'var', 'a', '=', '5']
+    
+    - Interpreter:
+        translate and read the files line by line on the fly.
+        (run this line, return to this line ....)
+    
+    - Compiler:
+        like Interpreter but it doesn't translate on the fly
+        What it does is it works ahead of time to create a translation of what code we've just written
+        and it compiles down to usually a language that can be understood by the machines
+
+        <=                                                    =>
+        High Level Language         ByCode          Machine code
+        Javascript, C#, ...      V8 Bytecode    x86_64 machine code
+    
+    => Combine Interpreter + Compiler = JIT Compiler
+
+    - Write optimized Code:
+        Careful with these: eval(), arguments, for in, with, delete
+
+        INLINE CACHING:
+
+            function findUser(user){
+                return `found ${user.firstName} ${user.lastName}`;
+            }
+
+            const userData{
+                firstName: 'Linh'
+                lastName: 'Tinh'
+            }
+
+            findUser(userData);
+        
+        HIDDEN CLASSES:
+
+            function Animal(x, y){
+                this.x = x;
+                this.y = y;
+            }
+
+            const obj1 = new Animal(1,2);
+            delete obj1;
+    
+    - Call Stack + Memory Heap
+
+        const number = 234;         //allocate memory for number
+        const string = 'some text'; //allocate memory for string
+
+        const human = {             //allocate memory for an object ... and it's value
+            first: 'linh',
+            last: 'tinh'
+        }
+
+        function calculate(){
+            return 4 + 5;
+        }
+
+        calculate(); //Call Stack
+    
+    - Stack Overflow: no more space in Call Stack
+
+    - Garbage Collection: Mark and Sweap
+
+    - Memory Leak:
+        //Global varibable
+        var a = 1;
+        //Set Interval
+
+    - Single Thread
+        only one set of instructions is executed at a time ( not multiple things )
+        <=> has only one call stack
+        => Javascript is synchronous
+
+        - What problems do you see with synchronous code ?
+            => really diffcult, if we have long running tasks what does that mean.
+
+    - Javascript runtime:
+        Web API: DOM, fetch(), setTimeout()
+        => can do something in asynchronous
+
+        Example:
+
+            console.log('1');
+            setTimeout(() => {console.log('2')}, 1000);
+            console.log('3');
+
+            Output => 1 3 2
+    
+    - NODEJS: js run outside browser
+
+SECTION 2:
+
+    - Execution context: Global Object, this, arguments
+        Example:
+
+            function printName(){
+                return 'Tran Nhat Linh';
+            }
+
+            function findName(){
+                return printName();
+            }
+
+            function sayMyName(){
+                return findName();
+            }
+
+            sayMyName();
+
+        Global Execution Context: Global Object, this
+         => Running your code
+    
+    - Lexical Enviroment
+        lexical ( tu vung )
+        In js our lexical scope ( available data + variables where the function was defined )
+            determines our available variables.
+        Not where the function is called ( dynamic scope )
+    
+    - Hoisting
+        Varibales are partially hoisted and function declarations are hoisted
+        Example:
+            console.log('1---------');
+            console.log(teddy);
+            console.log(sing());
+
+            var teddy = 'bear';
+
+            //function expression
+            var sing2 = function () {
+                console.log("u u u u la ");
+            }
+
+            //function declaration
+            function sing() {
+                console.log('la la la la');
+            }
+
+        # Prevent using hoisting because the code must be predicable
+    
+    - Function Invocation
+    
+        //Function expression
+        const canada = () => {
+            console.log('cold');
+        }
+
+        //Function declaration
+        function india(){
+            console.log('warm');
+        }
+
+        //Function Invocation/Call/Execute
+        india();
+        canada();
+
+        function marry(person1, person2){
+            console.log(arguments);
+            return `${person1}  is now married to ${person2}`;
+        }
+
+        marry('Tim', 'Tina');
+
+    - arguments Keyword
+        Look like an array but really not
+        You can't use array methods on arguments
+        Using: 
+            Array.from(arguments)
+            Rest Parameter:
+                function marry2(...args){
+                     //args now is just like array for using
+                     //args[0], args[1] ...
+                }
+        In modern JS you should avoid using "arguments" Keyword
+    
+    - Varibale Enviroment
+        Example:
+            function two(){
+                var isValid;
+            }
+
+            function one(){
+                var isValid = true;  //local Enviroment
+                two();
+            }
+            
+            var isValid = false;
+            one();
+
+    - Scope Chain
+        All functions have their own variable enviroment. They have access to each their own variables
+        Example:
+            function sayMyName(){
+                var a = 'a';
+
+                return function findName(){
+                    var b = 'b';
+                    return function printName(){
+                        var c = 'c';
+                        console.log(c);
+                        console.log(b);
+                        console.log(a);
+                        return 'Tran Nhat Linh';
+                    }
+                }
+            }
+
+            sayMyName()()();
+            => Tran Nhat Linh
+    
+    - [[ scope ]]
+        Lexical Enviroment ===  [[ scope ]]
+        Example:
+            'use strict'
+            function weird() {
+                height = 50;
+                return height;
+            }
+
+            weird();
+    
+    - IIFE
+        Example:
+            (function() {
+
+            })();
+
+        Example:
+            var script1 = (function(){
+                function a () {
+                    return 5;
+                }
+                return {
+                    a:a
+                }
+            })
+        
+        => call function a in script 1
+            script1.a();
+
+        Example:
+            <h1>Hello</h1>
+
+            <script src="jQuery cdn"></script>
+            <script>
+                var z = 1;
+                var script1 = (function ($) {
+                    $('h1').click(function() {
+                        $('h1').hide;
+                    })
+
+                    return{
+                        $: 'hi'
+                    }
+                })(jQuery)
+            </script>
+    
+    - this Keyword
+        this is the object that the function is a property of
+
+        Example: Give methods acess to their object
+            const obj = {
+                name: 'Antonia',
+                sing(){
+                    return 'this is ' + this.name;
+                },
+                singAgain(){
+                    return this.sing() + '!';
+                }
+            }
+
+            obj.sing();
+        
+        Example: excute same code for multiple objects
+            function importantPerson(){
+                console.log(this.name);
+            }
+
+            const name = 'Sunny';
+
+            const obj1 = {
+                name: 'Cassy',
+                importantPerson: importantPerson
+            }
+
+            const obj2 = {
+                name: 'Jacob',
+                importantPerson: importantPerson
+            }
+
+            obj1.importantPerson();
+            obj2.importantPerson();
+    
+    - call()
+        The call() method is a predefined JavaScript method.
+        With call(), an object can use a method belonging to another object.
+        Example:
+            var person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            var person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            var person2 = {
+                firstName:"Mary",
+                lastName: "Doe"
+            }
+            person.fullName.call(person1);  // Will return "John Doe" 
+        
+        The call() Method with Arguments
+            var person = {
+                fullName: function(city, country) {
+                    return this.firstName + " " + this.lastName + "," + city + "," + country;
+                }
+            }
+            var person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            person.fullName.call(person1, "Oslo", "Norway");
+    
+    - apply()
+        With the apply() method, you can write a method that can be used on different objects.
+        Example:
+             var person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            var person1 = {
+                firstName: "Mary",
+                lastName: "Doe"
+            }
+            person.fullName.apply(person1);  // Will return "Mary Doe"
+        
+        The Difference Between call() and apply()
+            The call() method takes arguments separately.
+            The apply() method takes arguments as an array.
+                => The apply() method is very handy if you want to use an array instead of an argument list.
+        
+        The apply() Method with Arguments
+            Example:
+                var person = {
+                    fullName: function(city, country) {
+                        return this.firstName + " " + this.lastName + "," + city + "," + country;
+                    }
+                }
+                var person1 = {
+                    firstName:"John",
+                    lastName: "Doe"
+                }
+                person.fullName.apply(person1, ["Oslo", "Norway"]);
+        Simulate a Max Method on Arrays
+                Math.max(1,2,3);  // Will return 3 
+
+                Since JavaScript arrays do not have a max() method, you can apply the Math.max() method instead.
+                Math.max.apply(null, [1,2,3]); // Will also return 3 
+                Math.max.apply(Math, [1,2,3]); // Will also return 3 
+                Math.max.apply(" ", [1,2,3]); // Will also return 3 
+                Math.max.apply(0, [1,2,3]); // Will also return 3 
+    
+    - bind()
+        Example:
+            var car = { 
+                registrationNumber: "GA12345",
+                brand: "Toyota",
+
+                displayDetails: function(){
+                    console.log(this.registrationNumber + " " + this.brand);
+                }
+            }
+            
+            # The above will work perfectly fine as long as we use it this way:
+
+            car.displayDetails(); // GA12345 Toyota
+
+            # But what if we want to borrow a method?
+            
