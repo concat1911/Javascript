@@ -139,5 +139,7 @@ Implementing Single Linked List
     myLinkedList.printList();
 
 Implementing Double Linked List
+    the same logic but the node now have 2 pointer, one point to previous node in list, one point to next node in list
 
 Single Linked List vs Double Linked List
+    #

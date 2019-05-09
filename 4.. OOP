@@ -107,7 +107,7 @@
         const shrek = new Orge('Shrek', 'club', 'green');
     
     Public & Private
-        Still in the work
+        Still under working
     
     4 Pillars of OOP
         - Encapsulation
@@ -117,4 +117,4 @@
         
         - Abstraction
         - Inheritance
-        - Polymorphism (same function but return different things)
+        - Polymorphism (same function name but return different things)
